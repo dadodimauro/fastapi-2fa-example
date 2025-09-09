@@ -1,0 +1,17 @@
+{
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true
+  },
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit"
+    }
+},
+"python.languageServer": "Pylance",
+"python.missingPackage.severity": "Hint",
+"python.analysis.typeCheckingMode": "strict",
+}
