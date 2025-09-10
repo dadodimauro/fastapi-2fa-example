@@ -30,7 +30,7 @@ from .utils import (
 )
 
 router = APIRouter(
-    prefix="",
+    prefix="/auth",
     tags=["auth"],
 )
 
@@ -41,7 +41,7 @@ async def register(
 ) -> RegisterResponse:
     if await user_service.get_by_email(session, register_request.email):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_409_CONFLICT,
             detail="User already exists",
         )
 

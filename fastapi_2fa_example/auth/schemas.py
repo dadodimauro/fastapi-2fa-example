@@ -2,7 +2,14 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Self
 
-from pydantic import BaseModel, EmailStr, Field, SecretStr, model_validator
+from pydantic import (
+    BaseModel,
+    EmailStr,
+    Field,
+    SecretStr,
+    field_serializer,
+    model_validator,
+)
 
 
 class RegisterRequest(BaseModel):
@@ -14,6 +21,10 @@ class RegisterRequest(BaseModel):
         default=False, description="Enable two-factor authentication"
     )
 
+    @field_serializer("password", when_used="json")
+    def dump_secret(self, v: SecretStr) -> str:
+        return v.get_secret_value()
+
 
 class RegisterResponse(BaseModel):
     requires_2fa: bool = Field(default=False, description="Whether 2FA is required")
@@ -23,6 +34,10 @@ class RegisterResponse(BaseModel):
 class LoginRequest(BaseModel):
     email: EmailStr = Field(..., description="User email")
     password: SecretStr = Field(..., min_length=8, max_length=128)
+
+    @field_serializer("password", when_used="json")
+    def dump_secret(self, v: SecretStr) -> str:
+        return v.get_secret_value()
 
 
 class LoginResponse(BaseModel):

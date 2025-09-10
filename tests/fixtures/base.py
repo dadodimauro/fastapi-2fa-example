@@ -26,6 +26,6 @@ async def app(
 @pytest_asyncio.fixture
 async def client(app: FastAPI) -> AsyncGenerator[httpx.AsyncClient]:
     async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=app), base_url="http://test/api"
+        transport=httpx.ASGITransport(app=app), base_url="http://test"
     ) as client:
         yield client
