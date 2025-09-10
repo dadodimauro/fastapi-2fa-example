@@ -1,17 +1,17 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import Literal, TypeAlias
+from typing import Literal
 
 from fastapi import Depends, Request
-from sqlalchemy import Engine, exc
+from sqlalchemy import Engine, MetaData, exc
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.orm import Session
 
 from .config import Settings
 
-ProcessName: TypeAlias = Literal["api"]
-AsyncSessionMaker: TypeAlias = async_sessionmaker[AsyncSession]
+type ProcessName = Literal["app", "test"]
+type AsyncSessionMaker = async_sessionmaker[AsyncSession]
 
 
 def create_async_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
@@ -88,6 +88,13 @@ class DbPoolExhaustedException(Exception):
 
     def __init__(self, message: str):
         self.message = message
+
+
+async def create_all(async_engine: AsyncEngine, metadata: MetaData) -> None:
+    async with async_engine.begin() as conn:
+        await conn.run_sync(
+            lambda sync_conn: metadata.create_all(bind=sync_conn, checkfirst=True)
+        )
 
 
 __all__ = [

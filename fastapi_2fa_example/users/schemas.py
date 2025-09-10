@@ -1,15 +1,18 @@
-from pydantic import BaseModel, EmailStr, Field, SecretStr
+from pydantic import BaseModel, EmailStr, Field
 
 
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     email: EmailStr
-    password: SecretStr
     name: str = Field(..., min_length=2, max_length=50)
     surname: str = Field(..., min_length=2, max_length=50)
-    enable_2fa: bool = Field(
+    requires_2fa: bool = Field(
         default=False, description="Enable two-factor authentication"
     )
 
 
-class User(UserCreate):
+class UserCreate(UserBase):
+    password_hash: str
+
+
+class User(UserBase):
     id: int

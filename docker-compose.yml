@@ -24,3 +24,8 @@ services:
       timeout: 40s
       interval: 2s
       retries: 20
+  
+  redis:
+    image: redis
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"

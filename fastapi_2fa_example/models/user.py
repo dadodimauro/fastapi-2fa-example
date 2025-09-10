@@ -9,7 +9,7 @@ class User(TimestampedModel):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     email: Mapped[str] = mapped_column(String, nullable=False, unique=True)
-    hashed_password: Mapped[str] = mapped_column(String, nullable=False)
+    password_hash: Mapped[str] = mapped_column(String, nullable=False)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     surname: Mapped[str] = mapped_column(String(50), nullable=False)
-    enable_2fa: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    requires_2fa: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
