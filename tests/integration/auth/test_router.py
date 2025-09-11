@@ -1,3 +1,5 @@
+from unittest.mock import AsyncMock
+
 import pytest
 from fastapi import status
 from httpx import AsyncClient
@@ -43,7 +45,9 @@ class TestRegister:
 
 @pytest.mark.asyncio
 class TestLogin:
-    async def test_login(self, client: AsyncClient, random_user: User) -> None:
+    async def test_login(
+        self, client: AsyncClient, mock_send_email: AsyncMock, random_user: User
+    ) -> None:
         login_request = LoginRequest(
             email=random_user.email,
             password=SecretStr("password"),
@@ -56,7 +60,11 @@ class TestLogin:
         assert response.json().get("tmp_token") is None
         assert response.json().get("access_token") is not None
 
-    async def test_wrong_password(self, client: AsyncClient, random_user: User) -> None:
+        assert mock_send_email.call_count == 0  # no email should be sent
+
+    async def test_wrong_password(
+        self, client: AsyncClient, mock_send_email: AsyncMock, random_user: User
+    ) -> None:
         login_request = LoginRequest(
             email=random_user.email,
             password=SecretStr("wrong_password"),
@@ -66,7 +74,11 @@ class TestLogin:
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    async def test_invalid_email(self, client: AsyncClient, random_user: User) -> None:
+        assert mock_send_email.call_count == 0  # no email should be sent
+
+    async def test_invalid_email(
+        self, client: AsyncClient, mock_send_email: AsyncMock, random_user: User
+    ) -> None:
         login_request = LoginRequest(
             email="invalid@example.com",
             password=SecretStr("wrong_password"),
@@ -76,7 +88,11 @@ class TestLogin:
         )
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    async def test_login_2fa(self, client: AsyncClient, random_2fa_user: User) -> None:
+        assert mock_send_email.call_count == 0  # no email should be sent
+
+    async def test_login_2fa(
+        self, client: AsyncClient, mock_send_email: AsyncMock, random_2fa_user: User
+    ) -> None:
         login_request = LoginRequest(
             email=random_2fa_user.email,
             password=SecretStr("password"),
@@ -89,7 +105,10 @@ class TestLogin:
         assert response.json().get("tmp_token") is not None
         assert response.json().get("access_token") is None
 
-        # TODO: check email is sent
+        assert mock_send_email.call_count == 1  # email should be sent
+        assert mock_send_email.call_args[1]["to_email"] == random_2fa_user.email
+        assert mock_send_email.call_args[1]["subject"] == "Your OTP Code"
+        assert mock_send_email.call_args[1]["body"].split(": ")[1].isdigit()  # OTP code
 
 
 @pytest.mark.asyncio
@@ -162,7 +181,7 @@ class TestVerify2FA:
         # TODO: check if this can be done in a cleaner way
         otp = await otp_service.get_by_user_id(redis=redis, user_id=random_2fa_user.id)
         assert otp is not None
-        otp.otp = str(int(otp.otp) + 1)  # wrong OTP
+        otp.otp = str(int(otp.otp) + 1).zfill(len(otp.otp))  # wrong OTP
 
         two_fa_request = TwoFARequest(tmp_token=tmp_token, otp=otp.otp)
 

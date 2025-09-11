@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from fastapi_2fa_example.logger import logger
+from fastapi_2fa_example.mail_sender import send_email
 from fastapi_2fa_example.postgres import AsyncSession, get_db_session
 from fastapi_2fa_example.redis import (
     RedisAsyncConnectionPool,
@@ -89,7 +90,18 @@ async def login(
             )
 
         # send email
-        logger.info(f"Sending OTP {otp} to {user.email}")
+        try:
+            await send_email(
+                to_email=user.email,
+                subject="Your OTP Code",
+                body=f"Your OTP code is: {otp}",
+            )
+        except Exception as e:
+            logger.exception(f"Failed to send email: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to send OTP email",
+            )
 
         tmp_token = create_jwt_token(
             user_id=user.id,
