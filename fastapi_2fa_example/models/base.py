@@ -23,7 +23,7 @@ class Model(DeclarativeBase):
 
     metadata = my_metadata
 
-    def to_dict(self) -> dict[str, object]:
+    def to_dict(self) -> dict[str, object]:  # pragma: no cover
         """
         Convert the model instance to a dictionary.
         This method is used for serialization purposes.

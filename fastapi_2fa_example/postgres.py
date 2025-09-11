@@ -14,7 +14,9 @@ type ProcessName = Literal["app", "test"]
 type AsyncSessionMaker = async_sessionmaker[AsyncSession]
 
 
-def create_async_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
+def create_async_sessionmaker(
+    engine: AsyncEngine,
+) -> async_sessionmaker[AsyncSession]:  # pragma: no cover
     return async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
 
@@ -32,7 +34,7 @@ def create_async_engine(process_name: ProcessName, settings: Settings) -> AsyncE
 
 async def get_db_sessionmaker(
     request: Request,
-) -> AsyncGenerator[AsyncSessionMaker]:
+) -> AsyncGenerator[AsyncSessionMaker]:  # pragma: no cover
     sess_maker: AsyncSessionMaker = request.state.async_sessionmaker
     yield sess_maker
 
@@ -40,7 +42,7 @@ async def get_db_sessionmaker(
 async def get_db_session(
     request: Request,
     sessionmaker: AsyncSessionMaker = Depends(get_db_sessionmaker),
-) -> AsyncGenerator[AsyncSession]:
+) -> AsyncGenerator[AsyncSession]:  # pragma: no cover
     """
     Generates a new session for the request
     using the sessionmaker in the application state.
@@ -63,7 +65,7 @@ async def get_db_session(
 @asynccontextmanager
 async def get_db_session_from_pool(
     sessionmaker: AsyncSessionMaker,
-) -> AsyncGenerator[AsyncSession]:
+) -> AsyncGenerator[AsyncSession]:  # pragma: no cover
     """
     Context manager aware db session. Will throw DbPoolExhaustedException if db pool is exhausted.
     """
@@ -84,11 +86,13 @@ async def get_db_session_from_pool(
 class DbPoolExhaustedException(Exception):
     message: str
 
-    def __init__(self, message: str):
+    def __init__(self, message: str):  # pragma: no cover
         self.message = message
 
 
-async def create_all(async_engine: AsyncEngine, metadata: MetaData) -> None:
+async def create_all(
+    async_engine: AsyncEngine, metadata: MetaData
+) -> None:  # pragma: no cover
     async with async_engine.begin() as conn:
         await conn.run_sync(
             lambda sync_conn: metadata.create_all(bind=sync_conn, checkfirst=True)

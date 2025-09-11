@@ -77,9 +77,6 @@ def decode_token(token_str: str) -> Token:
     except jwt.ExpiredSignatureError as e:
         logger.exception("Token has expired")
         raise ValueError("Token has expired") from e
-    except jwt.PyJWKError as e:
-        logger.exception("Invalid token")
-        raise ValueError("Invalid token") from e
     except ValidationError as e:
         logger.exception("Invalid token payload")
         raise ValueError("Invalid token payload") from e

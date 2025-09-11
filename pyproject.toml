@@ -26,6 +26,7 @@ dev = [
     "psycopg2-binary>=2.9.10",
     "pytest>=8.4.2",
     "pytest-asyncio>=1.1.0",
+    "pytest-cov>=7.0.0",
     "pytest-pikachu>=1.0.0",
     "ruff>=0.12.12",
     "sqlalchemy-utils>=0.42.0",
@@ -141,9 +142,17 @@ line-ending = "auto"
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
+[tool.coverage.run]
+concurrency = ["thread", "greenlet"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+] 
 
 [tool.pytest.ini_options]
-addopts = "--pikachu"
+addopts = "--pikachu --cov=fastapi_2fa_example --cov-report=term-missing"
 asyncio_mode = "strict"
 asyncio_default_fixture_loop_scope = "function"
 markers = [

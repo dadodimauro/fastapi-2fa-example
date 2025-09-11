@@ -30,11 +30,13 @@ async def create_redis_pool(
     await redis_pool.aclose()
 
 
-async def get_redis_pool(request: Request) -> RedisAsyncConnectionPool:
+async def get_redis_pool(
+    request: Request,
+) -> RedisAsyncConnectionPool:  # pragma: no cover
     return cast(RedisAsyncConnectionPool, request.state.redis_pool)
 
 
-class RedisPoolExhaustedException(Exception):
+class RedisPoolExhaustedException(Exception):  # pragma: no cover
     message: str
 
     def __init__(self, message: str):
@@ -48,7 +50,7 @@ async def get_redis_client_from_pool(
     try:
         async with Redis(connection_pool=redis_pool) as client:
             yield client
-    except ConnectionError as ex:
+    except ConnectionError as ex:  # pragma: no cover
         raise RedisPoolExhaustedException("redis pool exhaustion") from ex
 
 

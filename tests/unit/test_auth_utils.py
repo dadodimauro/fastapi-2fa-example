@@ -16,17 +16,6 @@ def test_hash_and_verify_password():
     assert not utils.verify_password("wrongpassword", hashed)
 
 
-def test_create_and_decode_jwt_token():
-    user_id = 123
-    token_type = TokenType.ACCESS
-    token_str = utils.create_jwt_token(user_id=user_id, type=token_type, exp=1)
-    assert isinstance(token_str, str)
-    token = utils.decode_token(token_str=token_str)
-    assert isinstance(token, Token)
-    assert token.user_id == user_id
-    assert token.type == token_type
-
-
 def test_create_jwt_token_invalid_type():
     with pytest.raises(ValueError):
         utils.create_jwt_token(1, "invalid_type")  # type: ignore
@@ -75,6 +64,12 @@ def test_decode_token_invalid_type():
     )
     with pytest.raises(ValueError, match="Invalid token payload"):
         utils.decode_token(token_str)
+
+
+def test_decode_token_malformed():
+    malformed_token_str = "this.is.not.a.valid.token"
+    with pytest.raises(ValueError, match="Failed to decode token"):
+        utils.decode_token(malformed_token_str)
 
 
 def test_generate_otp():

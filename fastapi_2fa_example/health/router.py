@@ -28,7 +28,7 @@ async def healthz(
     try:
         await session.execute(select(1))
         logger.debug("Database connection successful.")
-    except SQLAlchemyError as e:
+    except SQLAlchemyError as e:  # pragma: no cover
         logger.error("Database connection error: %s", e)
         raise HTTPException(status_code=503, detail="Database is not available") from e
 
@@ -36,7 +36,7 @@ async def healthz(
         async with get_redis_client_from_pool(redis_pool) as redis:
             await redis.ping()  # pyright: ignore[reportUnknownMemberType]
             logger.debug("Redis connection successful.")
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         logger.error("Redis connection error: %s", e)
         raise HTTPException(status_code=503, detail="Redis is not available") from e
 

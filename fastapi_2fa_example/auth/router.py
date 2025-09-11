@@ -107,7 +107,7 @@ async def login(
                 subject="Your OTP Code",
                 body=f"Your OTP code is: {otp}",
             )
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.exception(f"Failed to send email: {e}")
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
