@@ -10,7 +10,7 @@ Since the application depends on both a database (Postgres) and a cache (Redis),
 ### Prerequisites
 
 - Docker
-- Docker Compose
+- Docker Compose (>= v2.25.0, necessary for the `--watch` flag)
 - uv
 
 ### Installation
@@ -125,3 +125,17 @@ In order to test the correct behavior of the authentication system, the followin
 ### Health check
 
 Since the application is designed to run in a micro-services architecture, a health check endpoint is available at `GET /healthz` to verify that the application is running correctly; this endpoint does not require authentication and will check the connection to both the database and the cache.
+
+## SendGrid Integration
+
+The application integrates with SendGrid to send 2FA codes via email. To enable this functionality, you need to set the following environment variables in your `.env` file:
+
+``` env
+ENABLE_SENDGRID=true
+SENDGRID_API_KEY=your_sendgrid_api_key
+EMAIL_FROM=noreply@example.com
+```
+
+- `ENABLE_SENDGRID`: Set to `true` to enable SendGrid email sending.
+- `SENDGRID_API_KEY`: Your SendGrid API key.
+- `EMAIL_FROM`: The email address used as the sender for 2FA emails.

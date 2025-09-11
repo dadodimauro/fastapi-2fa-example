@@ -67,6 +67,11 @@ class Settings(BaseSettings):
     LOGIN_TOKEN_EXPIRE_MINUTES: int = 10
     OTP_EXPIRE_MINUTES: int = 5
 
+    # Email
+    ENABLE_SENDGRID: bool = False
+    SENDGRID_API_KEY: SecretStr = Field(default=SecretStr("mysecretapikey"))
+    EMAIL_FROM: str = "noreply@example.com"
+
     model_config = SettingsConfigDict(
         env_file_encoding="utf-8",
         case_sensitive=False,
@@ -88,6 +93,9 @@ class Settings(BaseSettings):
                 path=self.POSTGRES_DATABASE,
             )
         )
+
+    def is_testing(self) -> bool:
+        return self.ENV == Environment.testing
 
 
 settings = Settings()
