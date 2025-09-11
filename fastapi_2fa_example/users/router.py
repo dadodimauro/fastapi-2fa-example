@@ -17,7 +17,12 @@ router = APIRouter(
 
 
 @router.get(
-    "", response_model=list[User], dependencies=[Depends(validate_access_token)]
+    "",
+    response_model=list[User],
+    dependencies=[Depends(validate_access_token)],
+    summary="Get all users",
+    description="Retrieve a list of all users in the system.",
+    responses={status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"}},
 )
 async def get_users(
     session: AsyncSession = Depends(get_db_session),
@@ -25,7 +30,16 @@ async def get_users(
     return await user_service.get_all(session=session)
 
 
-@router.get("/me", response_model=User)
+@router.get(
+    "/me",
+    response_model=User,
+    summary="Get current user",
+    description="Retrieve the details of the currently authenticated user.",
+    responses={
+        status.HTTP_404_NOT_FOUND: {"description": "User not found"},
+        status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"},
+    },
+)
 async def get_me(
     token: Token = Depends(validate_access_token),
     session: AsyncSession = Depends(get_db_session),

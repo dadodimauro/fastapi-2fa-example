@@ -12,6 +12,8 @@ bearer_scheme = HTTPBearer()
 
 
 class TokenValidator:
+    """Dependency class to validate JWT tokens."""
+
     def __init__(self, token_type: TokenType):
         self.token_type = token_type
 
@@ -19,6 +21,8 @@ class TokenValidator:
         self,
         token: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)],
     ) -> Token:
+        """Validate the JWT token and ensure it matches the expected type."""
+
         try:
             decoded_token = decode_token(token.credentials)
             if decoded_token.type != self.token_type:

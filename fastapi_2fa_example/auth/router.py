@@ -36,7 +36,13 @@ router = APIRouter(
 )
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register",
+    status_code=status.HTTP_201_CREATED,
+    summary="Register a new user",
+    description="Register a new user with email and password (Optionally enable 2FA).",
+    responses={status.HTTP_409_CONFLICT: {"description": "User already exists"}},
+)
 async def register(
     register_request: RegisterRequest, session: AsyncSession = Depends(get_db_session)
 ) -> RegisterResponse:
@@ -58,7 +64,12 @@ async def register(
     return RegisterResponse(requires_2fa=user.requires_2fa, email=user.email)
 
 
-@router.post("/login")
+@router.post(
+    "/login",
+    summary="User login",
+    description="Authenticate user and initiate 2FA if enabled.",
+    responses={status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"}},
+)
 async def login(
     login_request: LoginRequest,
     session: AsyncSession = Depends(get_db_session),
@@ -115,7 +126,15 @@ async def login(
         )
 
 
-@router.post("/verify-2fa")
+@router.post(
+    "/verify-2fa",
+    summary="Verify 2FA OTP",
+    description="Verify the OTP for 2FA login.",
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {"description": "Unauthorized"},
+        status.HTTP_400_BAD_REQUEST: {"description": "Invalid token type"},
+    },
+)
 async def verify_2fa(
     two_fa_request: TwoFARequest,
     redis_pool: RedisAsyncConnectionPool = Depends(get_redis_pool),

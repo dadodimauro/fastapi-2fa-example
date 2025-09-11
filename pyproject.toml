@@ -41,6 +41,7 @@ migrate = { cmd = "scripts/migrate.sh", description = "Apply database migrations
 lint = { cmd = "uv run ruff format fastapi_2fa_example && uv run ruff check --fix fastapi_2fa_example", help = "Run linters with autofix" }
 mypy = { cmd = "uv run mypy fastapi_2fa_example", help = "Run mypy type checks" }
 test = { cmd = "uv run pytest", help = "Run tests" }
+make_env = { cmd = "cp .env.template .env", description = "Create a .env file from the .env.template" }
 
 
 [build-system]

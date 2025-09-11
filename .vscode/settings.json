@@ -14,4 +14,10 @@
 "python.languageServer": "Pylance",
 "python.missingPackage.severity": "Hint",
 "python.analysis.typeCheckingMode": "strict",
+"github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": true,
+    "markdown": true
+  }
 }

@@ -67,9 +67,6 @@ class Settings(BaseSettings):
     LOGIN_TOKEN_EXPIRE_MINUTES: int = 10
     OTP_EXPIRE_MINUTES: int = 5
 
-    # Other
-    CREATE_TABLES: bool = False
-
     model_config = SettingsConfigDict(
         env_file_encoding="utf-8",
         case_sensitive=False,

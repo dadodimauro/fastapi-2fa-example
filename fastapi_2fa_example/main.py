@@ -10,11 +10,9 @@ from fastapi_2fa_example.api import router
 from fastapi_2fa_example.config import settings
 from fastapi_2fa_example.health.router import router as health_router
 from fastapi_2fa_example.logger import logger
-from fastapi_2fa_example.models import Model
 from fastapi_2fa_example.postgres import (
     AsyncEngine,
     AsyncSessionMaker,
-    create_all,
     create_async_engine,
     create_async_sessionmaker,
 )
@@ -34,10 +32,6 @@ async def lifespan(_: FastAPI) -> AsyncIterator[State]:
     async with create_redis_pool(process_name="app") as redis_pool:
         async_engine = create_async_engine(process_name="app", settings=settings)
         async_sessionmaker = create_async_sessionmaker(async_engine)
-
-        if settings.CREATE_TABLES:
-            logger.warning("Creating database tables...")
-            await create_all(async_engine=async_engine, metadata=Model.metadata)
 
         yield {
             "async_engine": async_engine,

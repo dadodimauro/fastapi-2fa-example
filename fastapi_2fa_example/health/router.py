@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -13,7 +13,14 @@ from fastapi_2fa_example.redis import (
 router = APIRouter(tags=["health"])
 
 
-@router.get("/healthz")
+@router.get(
+    "/healthz",
+    summary="Health check",
+    description="Check the health status of the application (including database and Redis).",
+    responses={
+        status.HTTP_503_SERVICE_UNAVAILABLE: {"description": "Service Unavailable"}
+    },
+)
 async def healthz(
     session: AsyncSession = Depends(get_db_session),
     redis_pool: RedisAsyncConnectionPool = Depends(get_redis_pool),
