@@ -100,7 +100,7 @@ To log in, send a POST request to `api/v1/auth/login` with the following JSON bo
 If the user has **2FA disabled**, the response will contain an access token used for authenticated requests.
 If the user has **2FA enabled**, the response will indicate that a 2FA code is required and provide a temporary token used to authenticate the 2FA verification request. Moreover, **a 2FA code will be sent to the user's email**.
 
-***NOTE: The email sending functionality is simulated by logging the 2FA code to the application logs. In a production environment, you would integrate with an email service provider to send the code to the user's email address.***
+***NOTE: The email sending functionality is by default simulated by logging the 2FA code to the application logs. More details on how to enable real email sending can be found in the [SendGrid Integration](#sendgrid-integration) section.***
 
 ### Verify 2FA
 
