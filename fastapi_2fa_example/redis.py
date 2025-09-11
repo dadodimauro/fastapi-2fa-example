@@ -1,5 +1,6 @@
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import cast
 
 from fastapi import Request
 from redis.asyncio import BlockingConnectionPool, ConnectionError, ConnectionPool, Redis
@@ -30,7 +31,7 @@ async def create_redis_pool(
 
 
 async def get_redis_pool(request: Request) -> RedisAsyncConnectionPool:
-    return request.state.redis_pool
+    return cast(RedisAsyncConnectionPool, request.state.redis_pool)
 
 
 class RedisPoolExhaustedException(Exception):

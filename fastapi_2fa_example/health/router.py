@@ -27,7 +27,7 @@ async def healthz(
 
     try:
         async with get_redis_client_from_pool(redis_pool) as redis:
-            await redis.ping()  # type: ignore[call-arg]
+            await redis.ping()  # pyright: ignore[reportUnknownMemberType]
             logger.debug("Redis connection successful.")
     except Exception as e:
         logger.error("Redis connection error: %s", e)

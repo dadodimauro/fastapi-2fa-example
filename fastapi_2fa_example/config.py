@@ -80,14 +80,13 @@ class Settings(BaseSettings):
     def get_postgres_dsn(
         self,
         driver: Literal["asyncpg", "psycopg2"] | None,
-        force_localhost: bool = False,
     ) -> str:
         return str(
             PostgresDsn.build(
                 scheme=f"postgresql+{driver}" if driver else "postgresql",
                 username=self.POSTGRES_USER,
                 password=self.POSTGRES_PWD,
-                host=self.POSTGRES_HOST if not force_localhost else "localhost",
+                host=self.POSTGRES_HOST,
                 port=self.POSTGRES_PORT,
                 path=self.POSTGRES_DATABASE,
             )

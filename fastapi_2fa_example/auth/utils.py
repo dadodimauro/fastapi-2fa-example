@@ -12,11 +12,15 @@ from .schemas import Token, TokenType
 
 
 def hash_password(password: str) -> str:
-    return sha256_crypt.hash(password)
+    """Hash a plaintext password."""
+
+    return str(sha256_crypt.hash(password))
 
 
 def verify_password(password: str, password_hash: str) -> bool:
-    return sha256_crypt.verify(password, password_hash)
+    """Verify a plaintext password against a hashed password."""
+
+    return bool(sha256_crypt.verify(password, password_hash))
 
 
 def create_jwt_token(user_id: int, type: TokenType, exp: int | None = None) -> str:
@@ -45,7 +49,7 @@ def create_jwt_token(user_id: int, type: TokenType, exp: int | None = None) -> s
         exp=datetime.now(tz=UTC) + timedelta(minutes=exp),
         type=type,
     )
-    return jwt.encode(  # type: ignore
+    return jwt.encode(  # pyright: ignore[reportUnknownMemberType]
         payload=token.model_dump(),
         key=settings.JWT_SECRET.get_secret_value(),
         algorithm=settings.JWT_ALGORITHM,
@@ -63,7 +67,7 @@ def decode_token(token_str: str) -> Token:
         Token: The decoded JWT token.
     """
     try:
-        payload: str = jwt.decode(  # type: ignore
+        payload: str = jwt.decode(  # pyright: ignore[reportUnknownMemberType]
             jwt=token_str,
             key=settings.JWT_SECRET.get_secret_value(),
             algorithms=[settings.JWT_ALGORITHM],

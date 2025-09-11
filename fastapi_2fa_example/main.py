@@ -28,7 +28,7 @@ class State(TypedDict):
 
 
 @contextlib.asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[State]:
+async def lifespan(_: FastAPI) -> AsyncIterator[State]:
     logger.info("Starting...")
 
     async with create_redis_pool(process_name="app") as redis_pool:
